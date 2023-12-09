@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch and Display Titles</title>
+</head>
+<body>
+    <button id="myButton" onclick="handleButtonClick()">Fetch Titles</button>
+    <p><ul id="titleList"></ul></p>
+
+    <script>
+        // Function to fetch data from the API using promises
+     
+
+        // Function to handle button click
+        function handleButtonClick() {
+            const titleList = document.getElementById('titleList');
+
+            // Clear previous results
+            titleList.innerHTML = '';
+
+            // Fetch data when the button is clicked
+            fetchData()
+                .then(data => {
+                    // Extract titles from the data and create a list
+                    const titles = data.map(todo => todo.title);
+                    titles.forEach(title => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = title;
+                        titleList.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    // Display an error message in the list
+                    const errorItem = document.createElement('li');
+                    errorItem.textContent = `Error: ${error.message}`;
+                    titleList.appendChild(errorItem);
+                });
+        }
+
+        function fetchData() {
+            return new Promise((resolve, reject) => {
+                const apiUrl = 'https://jsonplaceholder.typicode.com/todos';
+
+                fetch(apiUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error fetching data from ${apiUrl}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => resolve(data))
+                    .catch(error => reject(error));
+            });
+        }
+
+        // Add event listener to the button
+        // document.getElementById('myButton').addEventListener('click', handleButtonClick);
+    </script>
+</body>
+</html>
